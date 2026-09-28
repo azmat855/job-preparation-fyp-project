@@ -56,24 +56,63 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
 }
 
 
+const fs = require("fs");
+
+
+// Auto-detect installed Google Chrome on Windows
+function getChromePath() {
+    const possiblePaths = [
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+        `C:\\Users\\${process.env.USERNAME || "ALI COM III"}\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe`
+    ];
+
+    return possiblePaths.find((path) => fs.existsSync(path));
+}
 
 async function generatePdfFromHtml(htmlContent) {
-    const browser = await puppeteer.launch()
-    const page = await browser.newPage();
-    await page.setContent(htmlContent, { waitUntil: "networkidle0" })
+    const chromePath = getChromePath();
 
-    const pdfBuffer = await page.pdf({
-        format: "A4", margin: {
-            top: "20mm",
-            bottom: "20mm",
-            left: "15mm",
-            right: "15mm"
-        }
-    })
+    const launchOptions = {
+        headless: true,
+        args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu"
+        ]
+    };
 
-    await browser.close()
+    // Agar system Chrome mil jaye toh directly woh executable use karein
+    if (chromePath) {
+        launchOptions.executablePath = chromePath;
+    }
 
-    return pdfBuffer
+    const browser = await puppeteer.launch(launchOptions);
+
+    try {
+        const page = await browser.newPage();
+        
+        await page.setContent(htmlContent, { 
+            waitUntil: "domcontentloaded",
+            timeout: 30000 
+        });
+
+        const pdfBuffer = await page.pdf({
+            format: "A4",
+            printBackground: true,
+           margin: {
+    top: "20mm",
+    bottom: "15mm",
+    left: "15mm",
+    right: "15mm"
+}
+        });
+
+        return pdfBuffer;
+    } finally {
+        await browser.close();
+    }
 }
 
 async function generateResumePdf({ resume, selfDescription, jobDescription }) {

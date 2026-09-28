@@ -1,12 +1,16 @@
-// ── Shared Variables (mirrors home.scss theme) ────────────────────────────────
-$bg-page: #0d1117;
-$bg-card: #161b22;
-$bg-panel: #1c2230;
-$bg-input: #1e2535;
-$border-color: #2a3348;
-$text-primary: #e6edf3;
-$text-muted: #7d8590;
-$accent: #ff2d78;
+// ── Shared Variables (mirrors global theme) ────────────────────────────────
+$bg-page: var(--bg-page);
+$bg-card: var(--bg-card);
+$bg-panel: var(--bg-panel);
+$bg-input: var(--bg-input);
+$border-color: var(--border-color);
+$border-strong: var(--border-strong);
+$text-primary: var(--text-primary);
+$text-muted: var(--text-muted);
+$text-soft: var(--text-soft);
+$accent: var(--accent);
+$accent-soft: var(--accent-soft);
+$accent-soft-strong: var(--accent-soft-strong);
 $font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
 // severity palette
@@ -41,6 +45,7 @@ $severity-low: #3fb950;
     border: 1px solid $border-color;
     border-radius: 1rem;
     justify-content: space-between;
+    overflow: hidden;
 }
 
 .interview-divider {
@@ -87,6 +92,7 @@ $severity-low: #3fb950;
         cursor: pointer;
         text-align: left;
         transition: background-color 0.15s, color 0.15s;
+        white-space: nowrap;
 
         &:hover {
             background-color: $bg-panel;
@@ -172,7 +178,7 @@ $severity-low: #3fb950;
     transition: border-color 0.2s;
 
     &:hover {
-        border-color: lighten($border-color, 8%);
+        border-color: $border-strong;
     }
 
     &__header {
@@ -189,8 +195,8 @@ $severity-low: #3fb950;
         font-size: 0.7rem;
         font-weight: 700;
         color: $accent;
-        background-color: rgba($accent, 0.1);
-        border: 1px solid rgba($accent, 0.2);
+        background-color: $accent-soft;
+        border: 1px solid $accent-soft-strong;
         border-radius: 0.3rem;
         padding: 0.15rem 0.4rem;
         margin-top: 2px;
@@ -234,7 +240,7 @@ $severity-low: #3fb950;
         p {
             margin: 0;
             font-size: 0.835rem;
-            color: lighten($text-muted, 15%);
+            color: $text-soft;
             line-height: 1.6;
         }
     }
@@ -263,7 +269,8 @@ $severity-low: #3fb950;
 }
 
 // ── Road Map ──────────────────────────────────────────────────────────────────
-.roadmap-list {
+
+    .roadmap-list {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -338,7 +345,7 @@ $severity-low: #3fb950;
             align-items: flex-start;
             gap: 0.5rem;
             font-size: 0.845rem;
-            color: lighten($text-muted, 12%);
+            color: $text-soft;
             line-height: 1.5;
         }
     }
@@ -475,5 +482,91 @@ $severity-low: #3fb950;
         color: $severity-low;
         background-color: rgba($severity-low, 0.1);
         border-color: rgba($severity-low, 0.25);
+    }
+}
+
+@media (max-width: 980px) {
+    .interview-page {
+        padding: 0.75rem;
+    }
+
+    .interview-layout {
+        flex-direction: column;
+    }
+
+    .interview-nav {
+        width: 100%;
+        padding: 1rem 0.75rem 0.75rem;
+        border-bottom: 1px solid $border-color;
+
+        .nav-content {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.25rem;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        &__item {
+            min-width: max-content;
+        }
+    }
+
+    .interview-divider {
+        width: 100%;
+        height: 1px;
+    }
+
+    .interview-content {
+        width: 100%;
+        max-height: none;
+        padding: 1rem 0.9rem 1.5rem;
+    }
+
+    .interview-sidebar {
+        width: 100%;
+        padding: 1rem 0.9rem 1.5rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .interview-page {
+        padding: 0.5rem;
+    }
+
+    .interview-nav {
+        padding-top: 0.75rem;
+
+        &__label {
+            padding-left: 0.4rem;
+        }
+    }
+
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+    }
+
+    .q-card__header {
+        align-items: center;
+    }
+
+    .q-card__question {
+        font-size: 0.82rem;
+    }
+
+    .roadmap-day {
+        padding-left: 2.6rem;
+    }
+
+    .match-score__ring {
+        width: 76px;
+        height: 76px;
     }
 }

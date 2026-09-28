@@ -4,11 +4,26 @@ const cors = require("cors")
 
 const app = express()
 
+const isAllowedOrigin = (origin) => {
+    if (!origin) return true
+
+    return /^(http|https):\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
+}
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
+    origin: (origin, callback) => {
+        if (isAllowedOrigin(origin)) {
+            callback(null, true)
+            return
+        }
+
+        callback(new Error("Not allowed by CORS"))
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }))
 
 /* require all the routes here */

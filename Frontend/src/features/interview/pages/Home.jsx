@@ -2,26 +2,66 @@ import React, { useState, useRef } from 'react'
 import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
+import { useAuth } from '../../auth/hooks/useAuth.js'
 
 const Home = () => {
 
     const { loading, generateReport,reports } = useInterview()
+    const { user, handleLogout } = useAuth()
     const [ jobDescription, setJobDescription ] = useState("")
     const [ selfDescription, setSelfDescription ] = useState("")
+    const [ errorMessage, setErrorMessage ] = useState("")
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
 
     const handleGenerateReport = async () => {
-        const resumeFile = resumeInputRef.current.files[ 0 ]
-        const data = await generateReport({ jobDescription, selfDescription, resumeFile })
-        navigate(`/interview/${data._id}`)
+        const resumeFile = resumeInputRef.current?.files?.[0]
+        const trimmedJobDescription = jobDescription.trim()
+        const trimmedSelfDescription = selfDescription.trim()
+
+        if (!trimmedJobDescription) {
+            setErrorMessage("Please paste the job description before generating the interview plan.")
+            return
+        }
+
+        if (!trimmedSelfDescription && !resumeFile) {
+            setErrorMessage("Please add either a resume or a brief self-description to continue.")
+            return
+        }
+
+        try {
+            setErrorMessage("")
+            const data = await generateReport({ jobDescription: trimmedJobDescription, selfDescription: trimmedSelfDescription, resumeFile })
+            if (data?._id) {
+                navigate(`/interview/${data._id}`)
+            }
+        } catch (error) {
+            setErrorMessage(error.message || "Unable to generate the interview strategy right now. Please try again.")
+        }
+    }
+
+    const handleLogoutClick = async () => {
+        const isLoggedOut = await handleLogout()
+
+        if (isLoggedOut) {
+            navigate('/login', { replace: true })
+        }
     }
 
     if (loading) {
         return (
             <main className='loading-screen'>
-                <h1>Loading your interview plan...</h1>
+                <div className='loading-card'>
+                    <div className='loading-spinner' />
+                    <div className='loading-dots'>
+                        <span />
+                        <span />
+                        <span />
+                    </div>
+                    <h1>Preparing your plan...</h1>
+                    <p>Our AI is analyzing your profile and job fit.</p>
+                </div>
             </main>
         )
     }
@@ -31,9 +71,23 @@ const Home = () => {
 
             {/* Page Header */}
             <header className='page-header'>
+                <div className='header-topbar'>
+                    <div className='user-pill'>Hi, {user?.username || 'User'}</div>
+                    <div className='header-actions'>
+                        <button
+                            type='button'
+                            className='header-action-btn header-action-btn--danger'
+                            onClick={handleLogoutClick}
+                        >
+                            Logout
+                        </button>
+                    </div>
+                </div>
                 <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
                 <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
             </header>
+
+            {errorMessage && <div className='form-message form-message--error'>{errorMessage}</div>}
 
             {/* Main Card */}
             <div className='interview-card'>
