@@ -19,7 +19,7 @@ main {
         align-items: center;
         justify-content: center;
         gap: 1rem;
-        background: rgba(22, 27, 34, 0.9);
+        background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 1.5rem;
         padding: 2rem 1.5rem;
@@ -43,9 +43,9 @@ main {
         width: 64px;
         height: 64px;
         border-radius: 50%;
-        border: 4px solid rgba(255, 255, 255, 0.14);
+        border: 4px solid var(--border-color);
         border-top-color: var(--accent);
-        border-right-color: rgba(239, 68, 68, 0.8);
+        border-right-color: var(--accent-alt);
         animation: auth-spin 0.9s linear infinite;
     }
 
@@ -59,7 +59,7 @@ main {
             width: 8px;
             height: 8px;
             border-radius: 999px;
-            background: rgba(239, 68, 68, 0.9);
+            background: var(--accent);
             animation: auth-bounce 1.2s ease-in-out infinite;
 
             &:nth-child(2) {

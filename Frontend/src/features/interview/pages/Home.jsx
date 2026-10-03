@@ -3,6 +3,7 @@ import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
 import { useAuth } from '../../auth/hooks/useAuth.js'
+import { UserRound } from 'lucide-react'
 
 const Home = () => {
 
@@ -72,7 +73,11 @@ const Home = () => {
             {/* Page Header */}
             <header className='page-header'>
                 <div className='header-topbar'>
-                    <div className='user-pill'>Hi, {user?.username || 'User'}</div>
+                    <div className='user-pill'>
+                        <UserRound className='user-pill__icon' size={18} aria-hidden='true' />
+                        <span className='user-pill__greeting'>Hi,</span>
+                        <span className='user-pill__name'>{user?.username || 'User'}</span>
+                    </div>
                     <div className='header-actions'>
                         <button
                             type='button'

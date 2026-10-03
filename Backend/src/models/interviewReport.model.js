@@ -84,6 +84,12 @@ const interviewReportSchema = new mongoose.Schema({
     behavioralQuestions: [ behavioralQuestionSchema ],
     skillGaps: [ skillGapSchema ],
     preparationPlan: [ preparationPlanSchema ],
+    status: {
+        type: String,
+        enum: [ "In Progress", "Completed" ],
+        default: "In Progress"
+    },
+    transcript: [ String ],
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"

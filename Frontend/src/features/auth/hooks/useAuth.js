@@ -7,7 +7,7 @@ import { login, register, logout, getMe } from "../services/auth.api";
 export const useAuth = () => {
 
     const context = useContext(AuthContext)
-    const { user, setUser, loading, setLoading } = context
+    const { user, setUser, loading, setLoading, token, setToken, syncToken } = context
 
 
     const handleLogin = async ({ email, password }) => {
@@ -16,8 +16,10 @@ export const useAuth = () => {
             const data = await login({ email, password })
             const userData = data?.user ?? null
             setUser(userData)
+            syncToken()
             return userData
-        } catch (err) {
+        } catch (error) {
+            console.warn('Login failed:', error)
             setUser(null)
             return null
         } finally {
@@ -31,8 +33,10 @@ export const useAuth = () => {
             const data = await register({ username, email, password })
             const userData = data?.user ?? null
             setUser(userData)
+            syncToken()
             return userData
-        } catch (err) {
+        } catch (error) {
+            console.warn('Registration failed:', error)
             setUser(null)
             return null
         } finally {
@@ -44,11 +48,14 @@ export const useAuth = () => {
         setLoading(true)
         try {
             await logout()
-            setUser(null)
             return true
-        } catch (err) {
+        } catch (error) {
+            console.warn('Logout failed:', error)
             return false
         } finally {
+            setUser(null)
+            localStorage.removeItem('auth_token')
+            setToken(null)
             setLoading(false)
         }
     }
@@ -56,18 +63,32 @@ export const useAuth = () => {
     useEffect(() => {
 
         const getAndSetUser = async () => {
-            try {
+            if (!token) {
+                setUser(null)
+                setLoading(false)
+                return
+            }
 
+            try {
                 const data = await getMe()
-                setUser(data.user)
-            } catch (err) { } finally {
+                if (data?.user) {
+                    setUser(data.user)
+                } else {
+                    setUser(null)
+                    localStorage.removeItem('auth_token')
+                    setToken(null)
+                }
+            } catch (error) {
+                console.warn('Unable to fetch current user:', error)
+                setUser(null)
+            } finally {
                 setLoading(false)
             }
         }
 
         getAndSetUser()
 
-    }, [])
+    }, [token, setLoading, setToken, setUser])
 
-    return { user, loading, handleRegister, handleLogin, handleLogout }
+    return { user, token, loading, handleRegister, handleLogin, handleLogout }
 }
