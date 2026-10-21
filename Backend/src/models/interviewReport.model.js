@@ -80,6 +80,11 @@ const interviewReportSchema = new mongoose.Schema({
         min: 0,
         max: 100,
     },
+    summary: {
+        type: String
+    },
+    strengths: [ String ],
+    areasForImprovement: [ String ],
     technicalQuestions: [ technicalQuestionSchema ],
     behavioralQuestions: [ behavioralQuestionSchema ],
     skillGaps: [ skillGapSchema ],

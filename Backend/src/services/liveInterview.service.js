@@ -193,6 +193,8 @@ Job Description: ${jobDesc}
 Interview Transcript:
 ${transcript}`
 
+        let feedback
+
         try {
             const response = await ai.models.generateContent({
                 model: "gemini-3-flash-preview",
@@ -211,31 +213,33 @@ ${transcript}`
                 throw new Error(`Zod Schema Validation Error: ${JSON.stringify(parsedFeedback.error.format())}`)
             }
 
-            const feedback = parsedFeedback.data
-
-            // Database Update
-            await interviewReportModel.findByIdAndUpdate(
-                this.reportData._id,
-                {
-                    $set: {
-                        status: "Completed",
-                        transcript: this.transcriptHistory,
-                        matchScore: feedback.matchScore,
-                        summary: feedback.summary,
-                        strengths: feedback.strengths,
-                        areasForImprovement: feedback.areasForImprovement,
-                        updatedAt: new Date()
-                    }
-                },
-                { returnDocument: 'after' }
-            )
-
-            return feedback
+            feedback = parsedFeedback.data
 
         } catch (error) {
             console.error(`[Session ${this.reportData?._id}] Final Feedback Generation Error:`, error?.message || error)
             throw new Error(getGeminiErrorMessage(error))
         }
+
+        const updatedReport = await interviewReportModel.findByIdAndUpdate(
+            this.reportData?._id,
+            {
+                $set: {
+                    status: "Completed",
+                    transcript: this.transcriptHistory,
+                    matchScore: feedback.matchScore,
+                    summary: feedback.summary,
+                    strengths: feedback.strengths,
+                    areasForImprovement: feedback.areasForImprovement
+                }
+            },
+            { returnDocument: "after", runValidators: true }
+        )
+
+        if (!updatedReport) {
+            throw new Error("Interview report not found; feedback could not be saved.")
+        }
+
+        return feedback
     }
 }
 

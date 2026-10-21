@@ -73,14 +73,14 @@ const Login = () => {
                         <input
                             value={email}
                             onChange={(e) => { setEmail(e.target.value) }}
-                            type="email" id="email" name='email' placeholder='Enter email address' />
+                            type="email" id="email" name='email' placeholder='Enter email address' autoComplete="off"/>
                     </div>
                     <div className="input-group">
                         <label htmlFor="password">Password</label>
                         <input
                             value={password}
                             onChange={(e) => { setPassword(e.target.value) }}
-                            type="password" id="password" name='password' placeholder='Enter password' />
+                            type="password" id="password" name='password' placeholder='Enter password'  autoComplete="new-password"/>
                     </div>
                     <button className='button primary-button' >Login</button>
                 </form>

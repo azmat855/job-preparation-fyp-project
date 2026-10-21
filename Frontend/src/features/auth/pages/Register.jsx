@@ -83,7 +83,7 @@ const Register = () => {
                         <input
                             value={username}
                             onChange={(e) => { setUsername(e.target.value) }}
-                            type="text" id="username" name='username' placeholder='Enter username' />
+                            type="text" id="username" name='username' placeholder='Enter username' autoComplete="off" />
                     </div>
                     <div className="input-group">
                         <label htmlFor="email">Email</label>
@@ -97,7 +97,7 @@ const Register = () => {
                         <input
                             value={password}
                             onChange={(e) => { setPassword(e.target.value) }}
-                            type="password" id="password" name='password' placeholder='Enter password' />
+                            type="password" id="password" name='password' placeholder='Enter password' autoComplete="new-password" />
                     </div>
 
                     <button className='button primary-button' >Register</button>

@@ -297,6 +297,16 @@ const LiveInterviewSession = ({ interviewReportId, report, onClose }) => {
                   <p>{message.text}</p>
                 </div>
               ))}
+              {isProcessing && !isInterviewEnded && (
+                <div className='live-interview-panel__message live-interview-panel__message--ai' role='status' aria-label='Interviewer is typing'>
+                  <span>AI</span>
+                  <div className='live-interview-panel__typing-dots' aria-hidden='true'>
+                    <i />
+                    <i />
+                    <i />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

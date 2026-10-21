@@ -73,8 +73,8 @@ const Interview = () => {
 
     if (loading || !report) {
         return (
-            <main className='loading-screen'>
-                <h1>Loading your interview plan...</h1>
+            <main className='interview-loading' role='status' aria-label='Loading interview plan'>
+                <span className='interview-loading__spinner' aria-hidden='true' />
             </main>
         )
     }

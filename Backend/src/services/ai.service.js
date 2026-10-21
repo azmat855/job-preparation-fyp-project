@@ -103,10 +103,10 @@ async function generatePdfFromHtml(htmlContent) {
             format: "A4",
             printBackground: true,
            margin: {
-    top: "20mm",
-    bottom: "15mm",
-    left: "15mm",
-    right: "15mm"
+    top: "18mm",
+    bottom: "14mm",
+    left: "10mm",
+    right: "10mm"
 }
         });
 
